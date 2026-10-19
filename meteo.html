@@ -1,0 +1,280 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Météo</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            background-color: rgb(30, 58, 90);
+        }
+
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+
+        #meteo {
+            width: 100%;
+            height: 100vh;
+            height: 100dvh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .meteo-container {
+            width: 40%;
+            max-height: 96vh;
+            max-height: 96dvh;
+            overflow: hidden;
+            border-top: 5px solid rgb(55 54 54 / 0.28);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+            border-radius: 30px;
+            background-color: rgb(55 54 54 / 0.35);
+            padding-bottom: 5px;
+        }
+
+        @media (max-width: 1100px) {
+            .meteo-container {
+                width: 70%;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .meteo-container {
+                width: 96%;
+                border-radius: 18px;
+            }
+
+            .weather-details {
+                gap: 5px;
+            }
+
+            .weather-details > div {
+                margin-right: 0 !important;
+            }
+
+            .weather-details > div > div {
+                padding: 4px !important;
+                margin-right: 0 !important;
+            }
+
+            .forecast-container {
+                padding-left: 5px !important;
+                padding-right: 5px !important;
+            }
+
+            .forecast-days > div {
+                padding: 4px !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<video class="video-background" autoplay muted loop playsinline>
+    <source src="temps/arrière- plan.mp4" type="video/mp4">
+</video>
+
+<main id="meteo">
+
+    <div class="meteo-container">
+
+        <!-- En-tête et formulaire de recherche -->
+        <div style="display:flex; flex-direction:row; justify-content:space-between; align-items:center; padding:20px 15px 0;">
+
+            <div style="display:flex; flex-direction:row; align-items:center; margin-left:5px;">
+                <img src="image-removebg-preview.png" alt="Icône météo"
+                     style="width:40px; height:40px; display:block; padding:0 0 15px 10px;">
+
+                <h1 style="color:rgba(255,255,255,0.95); font-size:20px; padding-left:0;">
+                    Météo<span style="color:#2B7FE6;">Apps</span>
+                </h1>
+            </div>
+
+            <form id="searchForm"
+                  style="display:flex; align-items:center; margin:10px 10px 20px; border-style:groove; border-color:rgba(255,255,255,0.25); box-shadow:0 8px 32px rgba(0,0,0,0.35); border-radius:15px; background-color:rgba(255,255,255,0.10);">
+
+                <input type="text" id="cityInput"
+                       style="border:none; background-color:transparent; color:rgba(255,255,255,0.95); font-size:12px; width:200px; padding:10px; outline:none;"
+                       placeholder="Entrez le nom de la ville" required>
+
+                <button type="submit"
+                        style="border:none; margin-right:5px; background-color:transparent; cursor:pointer;">
+                    <img src="temps/chercher.png" alt="Rechercher"
+                         style="display:block; width:18px; height:18px; margin-top:5px;">
+                </button>
+            </form>
+        </div>
+
+        <!-- Informations météorologiques actuelles -->
+        <div style="margin:0 40px; border-radius:15px; background-color:rgba(255,255,255,0.10); padding:0 20px 20px; border-style:groove; border-color:rgba(255,255,255,0.60); box-shadow:0 8px 32px rgba(0,0,0,0.35);">
+
+            <!-- Ville, pays, date et heure -->
+            <div style="display:flex; flex-direction:row; justify-content:space-between;">
+
+                <div style="display:flex; flex-direction:row; justify-content:center; align-items:center;">
+                    <div style="padding:5px 10px; text-align:center; margin-right:10px; display:flex; flex-direction:row; justify-content:center; align-items:center;">
+
+                        <img src="temps/image-removebg-preview (9).png"
+                             alt="Localisation"
+                             style="width:30px; height:30px; display:block;">
+
+                        <div style="display:flex; flex-direction:column; margin-right:10px; margin-left:5px;">
+                            <h3 id="cityName" style="color:rgba(255,255,255,0.95); padding-bottom:0; margin-bottom:0; margin-top:5px; font-size:15px;">Yaoundé</h3>
+                            <p id="country" style="color:rgb(255 255 255 / 0.58); font-size:10px; padding-top:0; margin-top:0;">Cameroun</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="text-align:right;">
+                    <p id="Date" style="color:rgba(255,255,255,0.95); font-size:12px; padding-bottom:0; margin-bottom:0;">Lundi le 17 Avril 2026</p>
+                    <p id="time" style="color:rgba(255,255,255,0.95); font-size:12px; padding-top:0; margin-top:0;">16h30</p>
+                </div>
+            </div>
+
+            <!-- Température et description -->
+            <div style="display:flex; flex-direction:row; justify-content:center; align-items:center;">
+
+                <div style="text-align:right; margin-right:20px;">
+                    <img id="weatherIcon"
+                         src="temps/image-removebg-preview (3).png"
+                         alt="Icône météo"
+                         style="width:100px; height:100px;">
+                </div>
+
+                <div>
+                    <h1 id="temperature" style="color:rgba(255,255,255,0.95); padding-bottom:0; margin-bottom:0; margin-top:5px; font-size:50px;">15°C</h1>
+                    <p id="description" style="color:rgba(255,255,255,0.70); font-size:12px; padding-top:0; margin-top:0;">Ensoleillé</p>
+                </div>
+            </div>
+
+            <!-- Humidité, pression, vent et précipitations -->
+            <div class="weather-details" style="display:flex; flex-direction:row; justify-content:space-between; align-items:center; padding-bottom:0;">
+
+                <div style="display:flex; flex-direction:row; justify-content:center; align-items:center; margin-right:10px;">
+                    <div style="background-color:rgba(255,255,255,0.10); border-radius:5px; padding:5px 10px; text-align:center; margin-right:10px; display:flex; flex-direction:row; justify-content:center; align-items:center;">
+
+                        <img src="temps/image-removebg-preview.png" alt="Humidité" style="width:20px; height:20px; display:block;">
+
+                        <div style="display:flex; flex-direction:column; margin-right:10px; margin-left:5px;">
+                            <p style="color:rgba(255,255,255,0.95); padding-bottom:0; margin-bottom:0; margin-top:5px; font-size:10px;">Humidité</p>
+                            <p id="humidity" style="color:rgb(255 255 255 / 0.70); font-size:10px; padding-top:0; margin-top:0;">80%</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display:flex; flex-direction:row; justify-content:center; align-items:center; margin-right:10px;">
+                    <div style="background-color:rgba(255,255,255,0.10); border-radius:5px; padding:5px 10px; text-align:center; margin-right:10px; display:flex; flex-direction:row; justify-content:center; align-items:center;">
+
+                        <img src="temps/image-removebg-preview (2).png" alt="Pression" style="width:20px; height:20px; display:block;">
+
+                        <div style="display:flex; flex-direction:column; margin-right:10px; margin-left:5px;">
+                            <p style="color:rgba(255,255,255,0.95); padding-bottom:0; margin-bottom:0; margin-top:5px; font-size:10px;">Pression</p>
+                            <p id="pression" style="color:rgb(255 255 255 / 0.70); font-size:10px; padding-top:0; margin-top:0;">1013 hPa</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display:flex; flex-direction:row; justify-content:center; align-items:center; margin-right:10px;">
+                    <div style="background-color:rgba(255,255,255,0.10); border-radius:5px; padding:5px 10px; text-align:center; margin-right:10px; display:flex; flex-direction:row; justify-content:center; align-items:center;">
+
+                        <img src="temps/image-removebg-preview (1).png" alt="Vent" style="width:20px; height:20px; display:block;">
+
+                        <div style="display:flex; flex-direction:column; margin-right:10px; margin-left:5px;">
+                            <p style="color:rgba(255,255,255,0.95); padding-bottom:0; margin-bottom:0; margin-top:5px; font-size:10px;">Vent</p>
+                            <p id="vitesse" style="color:rgb(255 255 255 / 0.70); font-size:10px; padding-top:0; margin-top:0;">15 km/h</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display:flex; flex-direction:row; justify-content:center; align-items:center; margin-right:10px;">
+                    <div style="background-color:rgba(255,255,255,0.10); border-radius:5px; padding:5px 10px; text-align:center; margin-right:10px; display:flex; flex-direction:row; justify-content:center; align-items:center;">
+
+                        <img src="temps/image-removebg-preview (4).png" alt="Précipitations" style="width:20px; height:20px; display:block;">
+
+                        <div style="display:flex; flex-direction:column; margin-right:10px; margin-left:5px;">
+                            <p style="color:rgba(255,255,255,0.95); padding-bottom:0; margin-bottom:0; margin-top:5px; font-size:10px;">Précipitations</p>
+                            <p id="Précipitation" style="color:rgb(255 255 255 / 0.70); font-size:10px; padding-top:0; margin-top:0;">0 mm</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Prévisions sur cinq jours -->
+        <div class="forecast-container" style="margin:10px 40px 0; border-radius:15px; background-color:rgba(255,255,255,0.10); padding:5px 20px 0 10px; border-style:groove; border-color:rgba(255,255,255,0.60); box-shadow:0 8px 32px rgba(0,0,0,0.35);">
+
+            <p style="font-size:10px; display:flex; justify-content:flex-start; align-items:flex-start; color:rgba(255,255,255,0.95); margin-top:0;">Prévisions sur 5 jours</p>
+
+            <div class="forecast-days" style="display:flex; flex-direction:row; justify-content:space-between; padding-bottom:15px;">
+
+                <div style="display:flex; flex-direction:column; text-align:center; background-color:rgba(255,255,255,0.10); padding:5px 15px; border-radius:15px;">
+                    <p id="day1" style="color:rgba(255,255,255,0.95); font-size:12px;">Lundi</p>
+                    <img id="image1" src="temps/image-removebg-preview (7).png" alt="Météo" style="width:30px; height:30px; display:block; margin:0 auto;">
+                    <p id="temperature1" style="color:rgb(255 255 255 / 0.61); font-size:10px;">15/17°C</p>
+                </div>
+
+                <div style="display:flex; flex-direction:column; text-align:center; background-color:rgba(255,255,255,0.10); padding:5px 15px; border-radius:15px;">
+                    <p id="day2" style="color:rgba(255,255,255,0.95); font-size:12px;">Mardi</p>
+                    <img id="image2" src="temps/image-removebg-preview (6).png" alt="Météo" style="width:30px; height:30px; display:block; margin:0 auto;">
+                    <p id="temperature2" style="color:rgb(255 255 255 / 0.70); font-size:10px;">15/17°C</p>
+                </div>
+
+                <div style="display:flex; flex-direction:column; text-align:center; background-color:rgba(255,255,255,0.10); padding:5px 15px; border-radius:15px;">
+                    <p id="day3" style="color:rgba(255,255,255,0.95); font-size:12px;">Mercredi</p>
+                    <img id="image3" src="temps/image-removebg-preview (3).png" alt="Météo" style="width:30px; height:30px; display:block; margin:0 auto;">
+                    <p id="temperature3" style="color:rgb(255 255 255 / 0.70); font-size:10px;">15/17°C</p>
+                </div>
+
+                <div style="display:flex; flex-direction:column; text-align:center; background-color:rgba(255,255,255,0.10); padding:5px 15px; border-radius:15px;">
+                    <p id="day4" style="color:rgba(255,255,255,0.95); font-size:12px;">Jeudi</p>
+                    <img id="image4" src="temps/image-removebg-preview (5).png" alt="Météo" style="width:30px; height:30px; display:block; margin:0 auto;">
+                    <p id="temperature4" style="color:rgb(255 255 255 / 0.70); font-size:10px;">15/17°C</p>
+                </div>
+
+                <div style="display:flex; flex-direction:column; text-align:center; background-color:rgba(255,255,255,0.10); padding:5px 15px; border-radius:15px;">
+                    <p id="day5" style="color:rgba(255,255,255,0.95); font-size:12px;">Vendredi</p>
+                    <img id="image5" src="temps/image-removebg-preview (7).png" alt="Météo" style="width:30px; height:30px; display:block; margin:0 auto;">
+                    <p id="temperature5" style="color:rgb(255 255 255 / 0.70); font-size:10px;">15/17°C</p>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Bloc d'informations supplémentaire -->
+        <div style="margin:10px 40px; border-radius:10px; background-color:rgba(255,255,255,0.10); padding:5px; border-style:groove; border-color:rgba(255,255,255,0.60); box-shadow:0 8px 32px rgba(0,0,0,0.35);">
+            <p style="text-align:center; color:rgba(255,255,255,0.95);"></p>
+            <p style="text-align:center; color:rgba(255,255,255,0.95);"></p>
+        </div>
+
+    </div>
+</main>
+
+<script type="module" src="Script.m%C3%A9t%C3%A9o.js"></script>
+
+</body>
+</html>
