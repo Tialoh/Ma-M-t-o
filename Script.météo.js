@@ -4,6 +4,7 @@ let searchButton = document.getElementById("searchForm");
 searchButton.addEventListener("submit", async (event) => {
     event.preventDefault();
 
+    let conseille=document.getElementById("conseille");
     let temperature = document.getElementById("temperature");
     let dateDay = document.getElementById("Date");
     let timeDate = document.getElementById("time");
@@ -90,6 +91,38 @@ searchButton.addEventListener("submit", async (event) => {
         95: "eclair.png"
     }
 
+    const conseilsMeteo = {
+        0: "Profite du beau temps et pense à bien t'hydrater.",
+        1: "Une belle journée s'annonce, profite de tes activités extérieures.",
+        2: "Le ciel est variable, prévois une petite veste au besoin.",
+        3: "Pense à prendre une petite veste si nécessaire.",
+        45: "La visibilité est réduite, sois prudent lors de tes déplacements.",
+        48: "Attention aux surfaces glissantes, déplace-toi prudemment.",
+        51: "Quelques gouttes sont possibles, garde un parapluie à proximité.",
+        53: "Prévois un parapluie pour éviter de te faire mouiller.",
+        55: "Protège-toi de l'humidité avec un parapluie.",
+        56: "Attention au risque de glissade, déplace-toi prudemment.",
+        57: "Évite les déplacements inutiles, les surfaces peuvent être glissantes.",
+        61: "Garde un parapluie avec toi, quelques averses sont possibles.",
+        63: "Pense à prendre ton parapluie avant de sortir.",
+        65: "Limite tes déplacements et évite les zones susceptibles d'être inondées.",
+        66: "Attention au risque de glissade, reste au chaud si possible.",
+        67: "Évite de sortir, les conditions peuvent être dangereuses.",
+        71: "Couvre-toi suffisamment pour rester au chaud.",
+        73: "Porte des vêtements chauds et fais attention aux surfaces glissantes.",
+        75: "Limite tes déplacements et habille-toi chaudement.",
+        77: "Prévois des vêtements adaptés au froid.",
+        80: "Garde ton parapluie à portée de main.",
+        81: "Prévois un parapluie et protège tes affaires de la pluie.",
+        82: "Évite les zones inondables et attends une accalmie avant de sortir.",
+        85: "Couvre-toi bien et reste prudent sur les surfaces glissantes.",
+        86: "Limite tes déplacements et reste bien au chaud.",
+        95: "Reste à l'abri pendant l'orage et évite les espaces ouverts.",
+        96: "Mets-toi à l'abri et protège-toi de la grêle.",
+        99: "Reste à l'intérieur et éloigne-toi des fenêtres."
+    };
+    conseille.textContent=conseilsMeteo[weather_code] || "choix non valide";
+
     weatherIcon.src = `temps/${weatherIcons[weather_code[0]] || "image-removebg-preview (6).png"}`;
 
     async function getWeatherPrevious() {
@@ -130,3 +163,5 @@ searchButton.addEventListener("submit", async (event) => {
     }
 await getWeatherNext()
 });
+
+
